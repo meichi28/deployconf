@@ -9,25 +9,26 @@ services:
       - mssql-data:/var/opt/mssql
     networks:
       - is-network
-
+    restart: unless-stopped
   app:
-    image: isapp:lab8
+    image: ghcr.io/meichi28/deployconf/isapp:latest
     container_name: isapp
     environment:
       - ASPNETCORE_URLS=${ASPNETCORE_URLS:-http://0.0.0.0:8080}
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
       - App__Name=${App__Name:-IsLabApp}
-      - App__Version=${App__Version:-0.1.0-lab8}
+      - App__Version=${App__Version:-0.1.0}
       - ConnectionStrings__Mssql=${ConnectionStrings__Mssql}
     ports:
-      - "127.0.0.1:5001:8080"
+      - "127.0.0.1:5000:8080"
     networks:
       - is-network
     depends_on:
       - mssql
-
+    restart: unless-stopped
 volumes:
   mssql-data:
-
+    driver: local
 networks:
   is-network:
+    driver: bridge
