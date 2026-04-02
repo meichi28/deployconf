@@ -1,9 +1,15 @@
-# Environment files with secrets
-.env
+# Build results
+bin/
+obj/
+publish/
+*.user
+*.suo
+.DS_Store
 
-# Docker files
-*.log
+# Environment files
+.env
 
 # IDE
 .vscode/
 .idea/
+*.swp
