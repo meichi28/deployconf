@@ -1,4 +1,4 @@
-name: Deploy Configuration
+name: CI/CD Pipeline
 
 on:
   push:
@@ -7,15 +7,22 @@ on:
     branches: [ main ]
 
 jobs:
-  validate:
+  build-and-test:
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v3
-      - name: Validate docker-compose.yml
-        run: |
-          docker-compose -f is-stack/docker-compose.yml config
-      - name: Check files exist
-        run: |
-          ls -la is-stack/
-          test -f is-stack/docker-compose.yml
-          test -f is-stack/.env.example
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Restore
+        run: dotnet restore IsLabApp.csproj  # ← Укажите правильный путь!
+      
+      - name: Build
+        run: dotnet build IsLabApp.csproj --no-restore
+      
+      - name: Test
+        run: dotnet test IsLabApp.Tests/IsLabApp.Tests.csproj --no-build
